@@ -72,11 +72,11 @@ training_set <- loan_data[index_train, ]
 test_set <- loan_data[-index_train, ]
 
 # Build a glm model with variable ir_cat as a predictor
-log_model_cat <- glm(loan_status ~ ir_cat, family = "binomial", data = training_set)
+#log_model_cat <- glm(loan_status ~ ir_cat, family = "binomial", data = training_set)
 # Print the parameter estimates 
-log_model_cat
+#log_model_cat
 # Look at the different categories in ir_cat using table()
-table(loan_data$ir_cat)
+#table(loan_data$ir_cat)
 
 # Build the logistic regression model with multiple var
 log_model_multi <- glm(loan_status ~ ir_cat + age + grade + loan_amnt + annual_inc, family = "binomial", data = training_set)
@@ -88,14 +88,8 @@ predictions_all_small <- predict(log_model_multi, newdata = test_set, type = "re
 # Look at the range of the object "predictions_all_small"
 range(predictions_all_small)
 
-
-# Create confusion matrix
-# The code for the logistic regression model and the predictions is given below
-log_model_full <- glm(loan_status ~ ., family = "binomial", data = training_set)
-predictions_all_full <- predict(log_model_full, newdata = test_set, type = "response")
 # Make a binary predictions-vector using a cut-off of 15%
-pred_cutoff_15 <- ifelse(predictions_all_full > 0.15,1, 0)
+pred_cutoff_15 <- ifelse(predictions_all_small > 0.15,1, 0)
 # Construct a confusion matrix
-table(test_set$loan_status, pred_cutoff_15)
-
-#acc_logit <- sum(diag(tab_class_logit)) / nrow(test_set)
+tab_class_logit <- table(test_set$loan_status, pred_cutoff_15)
+acc_logit <- sum(diag(tab_class_logit)) / nrow(test_set)
